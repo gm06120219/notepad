@@ -15,8 +15,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class NoteListView extends ListView implements OnItemClickListener {
+public class NoteListView extends ListView implements OnItemClickListener, android.widget.AdapterView.OnItemLongClickListener {
 	Context context;
 	NoteAdapter adapter;
 	DBManager db;
@@ -34,6 +35,8 @@ public class NoteListView extends ListView implements OnItemClickListener {
 				SwitchDpPx.dip2px(this.context, 360)));
 
 		this.setOnItemClickListener(this);
+		
+		this.setOnItemLongClickListener(this);
 	}
 	
 	public void refresh(){
@@ -56,6 +59,19 @@ public class NoteListView extends ListView implements OnItemClickListener {
 
 		this.context.startActivity(intent);
 	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+		Toast.makeText(this.context,  
+                "Item Deleted.", Toast.LENGTH_SHORT).show();
+		
+		// delete db
+		this.db.delete(content.get(position));
+		
+		// refresh listview
+		refresh();
+		return false;
+	}
 	
-	// TODO swipe left to display delete button
 }
